@@ -3,7 +3,7 @@
 #############
 
 provider "aws" {
-  region = "${var.region}"
+  region = var.region
 }
 
 ## NOTE: Uncomment if you change the main provider region to anything except "us-east-1"
@@ -57,7 +57,7 @@ variable "cognito_role_external_id" {
 data "aws_acm_certificate" "website" {
   # NOTE: uncomment if you changed default provider region
   # provider    = "aws.virginia"
-  domain = "${var.site_domain}"
+  domain = var.site_domain
 
   statuses    = ["ISSUED"]
   most_recent = true
@@ -90,12 +90,14 @@ const awsmobile = {
 
 export default awsmobile;
 AWSEXPORTS
+
 }
 
 output "aws-exports-file" {
-  value = "${local.awsexports}"
+  value = local.awsexports
 }
 
 output "user_pool_id" {
-  value = "${aws_cognito_user_pool.main.id}"
+  value = aws_cognito_user_pool.main.id
 }
+

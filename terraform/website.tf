@@ -3,7 +3,7 @@
 ###########
 
 resource "aws_s3_bucket" "website" {
-  bucket = "${var.site_domain}"
+  bucket = var.site_domain
 
   website {
     index_document = "index.html"
@@ -11,8 +11,8 @@ resource "aws_s3_bucket" "website" {
   }
 
   tags = {
-    Project = "${var.app_name}"
-    Stage   = "${var.stage}"
+    Project = var.app_name
+    Stage   = var.stage
   }
 }
 
@@ -22,8 +22,8 @@ locals {
 
 resource "aws_cloudfront_distribution" "website" {
   origin {
-    domain_name = "${aws_s3_bucket.website.website_endpoint}"
-    origin_id   = "${local.s3_origin_id}"
+    domain_name = aws_s3_bucket.website.website_endpoint
+    origin_id   = local.s3_origin_id
 
     // The redirect origin must be http even if it's on S3 for redirects to work properly
     // so the website_endpoint is used and http-only as S3 doesn't support https for this
@@ -35,7 +35,7 @@ resource "aws_cloudfront_distribution" "website" {
     }
   }
 
-  aliases = ["${var.site_domain}"]
+  aliases = [var.site_domain]
 
   enabled         = true
   is_ipv6_enabled = true
@@ -43,10 +43,10 @@ resource "aws_cloudfront_distribution" "website" {
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "${local.s3_origin_id}"
+    target_origin_id = local.s3_origin_id
 
-    "forwarded_values" {
-      "cookies" {
+    forwarded_values {
+      cookies {
         forward = "none"
       }
 
@@ -60,13 +60,13 @@ resource "aws_cloudfront_distribution" "website" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = "${data.aws_acm_certificate.website.arn}"
+    acm_certificate_arn      = data.aws_acm_certificate.website.arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.1_2016"
   }
 
   restrictions {
-    "geo_restriction" {
+    geo_restriction {
       restriction_type = "none"
     }
   }
@@ -77,13 +77,13 @@ resource "aws_cloudfront_distribution" "website" {
 ###############
 
 resource "aws_route53_record" "website" {
-  zone_id = "${data.aws_route53_zone.website.zone_id}"
-  name    = "${data.aws_route53_zone.website.name}"
+  zone_id = data.aws_route53_zone.website.zone_id
+  name    = data.aws_route53_zone.website.name
   type    = "A"
 
   alias {
-    name                   = "${aws_cloudfront_distribution.website.domain_name}"
-    zone_id                = "${aws_cloudfront_distribution.website.hosted_zone_id}"
+    name                   = aws_cloudfront_distribution.website.domain_name
+    zone_id                = aws_cloudfront_distribution.website.hosted_zone_id
     evaluate_target_health = true
   }
 }
@@ -93,7 +93,7 @@ resource "aws_route53_record" "website" {
 #################
 
 resource "aws_s3_bucket_policy" "site" {
-  bucket = "${aws_s3_bucket.website.id}"
+  bucket = aws_s3_bucket.website.id
 
   policy = <<POLICY
 {
@@ -112,4 +112,6 @@ resource "aws_s3_bucket_policy" "site" {
   ]
 }
 POLICY
+
 }
+
