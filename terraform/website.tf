@@ -2,7 +2,7 @@
 # Website #
 ###########
 
-resource "aws_s3_bucket_object" "site_assets" {
+resource "aws_s3_bucket_object" "site_asset_manifest" {
   bucket = var.site_domain
   key    = "manifest.json"
   source = "../public"
@@ -13,7 +13,7 @@ resource "aws_s3_bucket_object" "site_assets" {
   etag = "${filemd5("../public.manifest.json")}"
 }
 
-resource "aws_s3_bucket_object" "site_assets" {
+resource "aws_s3_bucket_object" "site_asset_index" {
   bucket = var.site_domain
   key    = "index.html"
   source = "../public"
@@ -24,7 +24,7 @@ resource "aws_s3_bucket_object" "site_assets" {
   etag = "${filemd5("../public/index.html")}"
 }
 
-resource "aws_s3_bucket_object" "site_assets" {
+resource "aws_s3_bucket_object" "site_asset_favicon" {
   bucket = var.site_domain
   key    = "favicon.ico"
   source = "../public"
