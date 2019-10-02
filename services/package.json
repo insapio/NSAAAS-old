@@ -1,5 +1,5 @@
 {
-  "name": "amp2terr-services",
+  "name": "amp2terr-servicestestsls",
   "version": "1.0.0",
   "description": "Serverless project for amp2terr backend functions",
   "main": "handler.js",

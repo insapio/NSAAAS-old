@@ -2,10 +2,9 @@
 # Welcome to Serverless!
 # Happy Coding!
 
-service: services # NOTE: update this with your service name
-
+service: servicetestsls # NOTE: update this with your service name
 custom:
-  WorkerTable: "Worker-amcretejobs-${self:provider.stage}"
+  WorkerTable: "Workers-amcretejobs-${self:provider.stage}"
 
 provider:
   name: aws
@@ -24,7 +23,16 @@ provider:
         - "dynamodb:Scan"
         - "dynamodb:Query"
       Resource:
-        - Fn::Join: [":", ["arn:aws:dynamodb", {"Ref": "AWS::Region"}, {"Ref": "AWS::AccountId"}, "table/${self:custom.WorkerTable"]]
+        - Fn::Join:
+            [
+              ":",
+              [
+                "arn:aws:dynamodb",
+                { "Ref": "AWS::Region" },
+                { "Ref": "AWS::AccountId" },
+                "table/${self:custom.WorkerTable}",
+              ],
+            ]
 
 package:
   include:
@@ -39,6 +47,6 @@ functions:
 resources:
   Outputs:
     NotifierFunctionArn:
-      Value: { "Fn::GetAtt": ["NotifierLambdaFunction", "Arn" ] }
+      Value: { "Fn::GetAtt": ["NotifierLambdaFunction", "Arn"] }
       Export:
         Name: "${self:provider.stage}NotifierLambdaFunction"

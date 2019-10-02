@@ -71,6 +71,11 @@ data "aws_route53_zone" "website" {
 # Outputs #
 ###########
 
+resource "local_file" "foo" {
+  content  = locals.awsexports
+  filename = "${path.module}/src/awsexports"
+}
+
 locals {
   awsexports = <<AWSEXPORTS
 
