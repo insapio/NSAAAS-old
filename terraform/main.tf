@@ -73,7 +73,7 @@ data "aws_route53_zone" "website" {
 
 resource "local_file" "foo" {
   content  = locals.awsexports
-  filename = "${path.module}/src/awsexports"
+  filename = "${path.module}/src/aws-exports"
 }
 
 locals {
