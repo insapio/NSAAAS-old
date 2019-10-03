@@ -91,6 +91,10 @@ const awsmobile = {
 export default awsmobile;
 AWSEXPORTS
   filename = "${path.module}/src/aws-exports"
+
+  provisioner "local-exec" {
+    command = "yarn install && yarn build && aws s3 sync build s3://${var.site_domain} --cache-control max-age=300"
+  }
 }
 
 output "user_pool_id" {
